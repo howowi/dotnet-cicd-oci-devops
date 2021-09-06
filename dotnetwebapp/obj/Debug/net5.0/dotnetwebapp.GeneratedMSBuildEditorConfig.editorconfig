@@ -1,0 +1,10 @@
+is_global = true
+build_property.TargetFramework = net5.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.PublishSingleFile = 
+build_property.IncludeAllContentForSelfExtract = 
+build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
+build_property.RootNamespace = dotnetwebapp
+build_property.ProjectDir = /Users/howie-owi/OneDrive/1 Work/3 Oracle Folder/1 Project/Demo/CICD for DotNET App/Git/dotnet-cicd-oci-devops/dotnetwebapp/
