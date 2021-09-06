@@ -20,6 +20,21 @@ steps:
           echo "Failed to obtain BUILDRUN_HASH"
         timeoutInSeconds: 400
         runAs: root
+  
+  - type: Command
+    name: "Install .NET SDK"
+    timeoutInSeconds: 40
+    command: |
+      echo "Add Microsoft package signing key and package repo"
+      rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+      echo "Install .NET SDK"
+      yum install dotnet-sdk-5.0 -y
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failed to install .NET SDK"
+        timeoutInSeconds: 400
+        runAs: root
 
   - type: Command
     name: "build .NET Webapp"
@@ -27,6 +42,7 @@ steps:
     command: |
       cd dotnetwebapp/
       dotnet publish -c Release
+      ls bin/Release/net5.0
     onFailure:
       - type: Command
         command: |
