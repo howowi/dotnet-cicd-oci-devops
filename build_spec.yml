@@ -23,7 +23,6 @@ steps:
   
   - type: Command
     name: "Install .NET SDK"
-    timeoutInSeconds: 40
     command: |
       echo "Add Microsoft package signing key and package repo"
       rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
@@ -38,7 +37,6 @@ steps:
 
   - type: Command
     name: "build .NET Webapp"
-    timeoutInSeconds: 40
     command: |
       cd dotnetwebapp/
       dotnet publish -c Release
