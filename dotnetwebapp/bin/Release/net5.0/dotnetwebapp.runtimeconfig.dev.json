@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "/Users/howie-owi/.dotnet/store/|arch|/|tfm|",
+      "/Users/howie-owi/.nuget/packages"
+    ]
+  }
+}
