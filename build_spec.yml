@@ -48,20 +48,20 @@ steps:
         timeoutInSeconds: 400
         runAs: root
 
-#   - type: Command
-#     name: "Build Docker image for nginx-webapp"
-#     command: |
-#       docker build -t lhr.ocir.io/apaccpt01/nginx-webapp:latest .
-#       echo "run nginx-webapp"
-#       docker run -dit -p 5000:5000 --name nginx-webapp lhr.ocir.io/apaccpt01/nginx-webapp:latest
-#       echo "run nginx-webapp successfully"
-#     onFailure:
-#       - type: Command
-#         command: |
-#           echo "Handing Failure"
-#           echo "Failure successfully handled"
-#         timeoutInSeconds: 400
-#         runAs: root
+  - type: Command
+    name: "Build Docker image for .NET webapp"
+    command: |
+      docker build -t lhr.ocir.io/apaccpt01/dotnet-webapp:latest .
+      echo "run dotnet-webapp"
+      docker run -dit -p 8080:80 --name dotnet-webapp lhr.ocir.io/apaccpt01/dotnet-webapp:latest
+      echo "run dotnet-webapp successfully"
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handing Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 400
+        runAs: root
   
 #   - type: Command
 #     name: "Build Pa11y CI Container for web accessibility testing"
