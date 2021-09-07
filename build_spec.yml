@@ -6,6 +6,8 @@ shell: bash
 env:
   exportedVariables:
     - BUILDRUN_HASH
+  vaultVariables:
+    OCIRCRED: "ocid1.vaultsecret.oc1.uk-london-1.amaaaaaay5l3z3ya74cfujmsgyeqpyyojowtsoiaqrniuvjxx67hw2cu43sa"
 
 steps:
   - type: Command
@@ -51,15 +53,14 @@ steps:
   - type: Command
     name: "Build Docker image for .NET webapp"
     command: |
-      docker build -t lhr.ocir.io/apaccpt01/dotnet-webapp:latest .
+      docker build -t lhr.ocir.io/apaccpt01/dotnet-webapp:${BUILDRUN_HASH} .
       echo "Run dotnet-webapp"
-      docker run -dit -p 8080:80 --name dotnet-webapp lhr.ocir.io/apaccpt01/dotnet-webapp:latest
+      docker run -dit -p 8080:80 --name dotnet-webapp lhr.ocir.io/apaccpt01/dotnet-webapp:${BUILDRUN_HASH}
       echo "Run dotnet-webapp successfully"
     onFailure:
       - type: Command
         command: |
-          echo "Handing Failure"
-          echo "Failure successfully handled"
+          echo "Failed to build Docker container for .NET webapp"
         timeoutInSeconds: 400
         runAs: root
   
@@ -72,8 +73,7 @@ steps:
     onFailure:
       - type: Command
         command: |
-          echo "Handing Failure"
-          echo "Failure successfully handled"
+          echo "Failed to build Docker container for Pa11y"
         timeoutInSeconds: 400
         runAs: root
 
@@ -81,18 +81,31 @@ steps:
     name: "Execute accessibility test"
     command: |
       docker ps -a
-      docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx-webapp
+      docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' dotnet-webapp
       echo "Execute Pa11y test"
       docker run pally-test
     onFailure:
       - type: Command
         command: |
-          echo "Handing Failure"
-          echo "Failure successfully handled"
+          echo "Accessibility Test Failed"
+        timeoutInSeconds: 400
+        runAs: root
+
+  - type: Command
+    name: "Push Docker Image to OCIR"
+    command: |
+      echo "Login to OCIR"
+      docker login lhr.ocir.io -u apaccpt01/howie_iam -p ${OCIRCRED}
+      echo "Push image to OCIR"
+      docker push lhr.ocir.io/apaccpt01/dotnet-webapp:${BUILDRUN_HASH}
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failed to push image $BUILDRUN_HASH to OCIR"
         timeoutInSeconds: 400
         runAs: root
 
 outputArtifacts:
   - name: dotnet-webapp-image
     type: DOCKER_IMAGE
-    location: lhr.ocir.io/apaccpt01/dotnet-webapp:latest
+    location: lhr.ocir.io/apaccpt01/dotnet-webapp:${BUILDRUN_HASH}
